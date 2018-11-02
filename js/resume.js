@@ -82,7 +82,7 @@ window.onload = function fload(){
 			othArr[i].push(document.getElementsByName("oth"+i)[0].value);
 		}
 
-		document.body.innerHTML = '<div style="margin:25px"><div id="holder"></div><div id="Rname"><h3>Name</h3></div><div><h3>Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3>Career Goal</h3></div>	<div id = Redu><h3>Education</h3>	</div><div id = "Rexp"><h3>Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button></div>'
+		document.body.innerHTML = '<div style="margin:25px"><div id="holder"></div><div id="Rname"><h3>Name</h3></div><div><h3>Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3>Career Goal</h3></div>	<div id = Redu><h3>Education</h3>	</div><div id = "Rexp"><h3>Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div><input type="text" name="fileName" placehoder="write file name here plz"><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button></div>'
 		if(typeof(imgFile)!=="undefined"){
 			document.getElementById("holder").innerHTML = '';
 			document.getElementById("holder").appendChild(imgFile);
@@ -129,11 +129,19 @@ window.onload = function fload(){
 		saveBtn.onclick = function save(){
 			cancelBtn.remove();
 			saveBtn.remove();
+			var fileName = "download"
+
 			var htmlContent = [document.documentElement.innerHTML];
 			var bl = new Blob(htmlContent, {type: "text/html"});
 	  		var a = document.createElement("a");
 	  		a.href = URL.createObjectURL(bl);
-	  		a.download = "Donwload.html";
+	  		if(document.getElementsByName("fileName")[0].value!=""){
+	  			var fn = document.getElementsByName("fileName")[0]
+	  			fileName = fn.value;
+	  		}
+	  		fn.remove();
+	  		a.download = fileName + ".html";
+
 			a.hidden = true;
 			document.body.appendChild(a);
 			a.innerHTML = "";
