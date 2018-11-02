@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<script type="text/javascript" src ="./js/resume.js" ></script>
+	<title></title>
+</head>
+
+<body>
+	
+	<div style="margin-left: 25px;padding-left: 3px">
+		<h1>Resume Authoring</h1>
+		<table>
+		<tr>
+			<td>First name&nbsp;&nbsp;</td>
+			<td><input type="text" name="FName" value=""></td>
+		</tr>
+		<tr>
+			<td>Middle name (optional)&nbsp;&nbsp;</td>
+			<td><input type="text" name="MName" value=""></td>
+		</tr>
+		<tr>
+			<td>Last name&nbsp;&nbsp;</td>
+			<td><input type="text" name="LName" value=""></td>
+		</tr>
+	</table>
+	<br>
+		<div>Image&nbsp;(png preferred)<br><input type="file" name="profile" value=""accept=".gif, .jpg, .png"></div>
+		<div id="status"></div>
+		<br>
+		<div>Contact </div>
+		<table>
+			<tr>
+				<td>&nbsp;&nbsp;H.P.&nbsp;</td>
+				<td><input type="tel" name="hp" placeholder="01*-****-****" value=""></td>
+			</tr>
+			<tr>
+				<td>&nbsp;&nbsp;TEL&nbsp;</td>  
+				<td><input type="tel" name="tel" placeholder="0**-****-****" value=""></td>
+			</tr>
+			<tr>
+				<td>&nbsp;&nbsp;E-mail&nbsp;</td>
+				<td><input type="E-mail" name="email" placeholder="****@***.***" value=""></td>
+			</tr>
+		</table>
+		<br>
+		<div>Career goal</div>
+		<div><textarea name = "goal" rows="5" cols = "80"></textarea></div>
+		<br>
+		<div>Education <button id = eduBtn>Add</button></div>
+		<table>
+			<tbody id = "eduT">
+				<tr>
+					<td>&nbsp;&nbsp;School</td>
+					<td>&nbsp;&nbsp;<input type="text" name="school0" value=""></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;Major</td>
+					<td>&nbsp;&nbsp;<input type="text" name="major0" value=""></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;Degree</td>
+					<td>&nbsp;&nbsp;<input type="text" name="degree0" value=""></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;Duration</td>
+					<td>&nbsp;&nbsp;<input type="text" name="Sduration0" value=""></td>
+				</tr>
+				<tr></tr><tr></tr><tr></tr><tr></tr>
+			</tbody>
+		</table>
+		
+		<div>Experience <button id = expBtn>Add</button></div>
+		<table>
+			<tbody id = "expT">
+				<tr>
+					<td>&nbsp;&nbsp;Organization</td>
+					<td>&nbsp;&nbsp;<input type="text" name="organization0" value=""></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;Duties</td>
+					<td>&nbsp;&nbsp;<input type="text" name="duties0" value=""></td>
+				</tr>
+				<tr>
+					<td>&nbsp;&nbsp;Duration</td>
+					<td>&nbsp;&nbsp;<input type="text" name="Eduration0" value=""></td>
+				</tr>
+				<tr></tr><tr></tr><tr></tr><tr></tr>
+			</tbody>
+		</table>
+		<br>
+		<div>Skills <button id = "SkillBtn">Add</button></div>
+			<table>
+				<tbody id = "skillT">
+					<tr>
+						<td>&nbsp;&nbsp;Language / Skill</td><td>&nbsp;&nbsp;Level</td>
+					</tr>
+					<tr>
+						<td>&nbsp;&nbsp;<input type="text" name="lang0" value=""></td><td>&nbsp;&nbsp;<input type="text" name="lev0" value=""></td>
+					</tr>
+				</tbody>
+			</table>
+		<br>
+		<div>Others <button id = othBtn>Add</button></div>
+		<ol style = "padding-left:25px" id = "othLi">
+			<li>&nbsp;&nbsp;<input type="text" name="oth0" value=""></li>
+		</ol>
+		<br>
+		<button id = "submitBtn">Submit</button>
+	</div>
+	<div id = "content">
+		
+	</div>
+	
+
+</body>
+
+</html>
