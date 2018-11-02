@@ -82,7 +82,11 @@ window.onload = function fload(){
 			othArr[i].push(document.getElementsByName("oth"+i)[0].value);
 		}
 
+<<<<<<< HEAD
 		document.body.innerHTML = '<div style="margin:25px;padding-bottom:20px;border:3px solid #b0e0e6;padding-left: 5px"><div id="holder"></div><div id="Rname"><h3>Name</h3></div><div><h3>Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3>Career Goal</h3></div>	<div id = Redu><h3>Education</h3>	</div><div id = "Rexp"><h3>Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div></div><input type="text" name="fileName" placeholder="write file name here"><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button>'
+=======
+		document.body.innerHTML = '<div style="margin:25px"><div id="holder"></div><div id="Rname"><h3>Name</h3></div><div><h3>Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3>Career Goal</h3></div>	<div id = Redu><h3>Education</h3>	</div><div id = "Rexp"><h3>Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button></div>'
+>>>>>>> parent of 345b8cc... Update js/resume.js
 		if(typeof(imgFile)!=="undefined"){
 			document.getElementById("holder").innerHTML = '';
 			document.getElementById("holder").appendChild(imgFile);
@@ -129,19 +133,11 @@ window.onload = function fload(){
 		saveBtn.onclick = function save(){
 			cancelBtn.remove();
 			saveBtn.remove();
-			var fileName = "download"
-
 			var htmlContent = [document.documentElement.innerHTML];
 			var bl = new Blob(htmlContent, {type: "text/html"});
 	  		var a = document.createElement("a");
 	  		a.href = URL.createObjectURL(bl);
-	  		if(document.getElementsByName("fileName")[0].value!=""){
-	  			var fn = document.getElementsByName("fileName")[0]
-	  			fileName = fn.value;
-	  		}
-	  		fn.remove();
-	  		a.download = fileName + ".html";
-
+	  		a.download = "Donwload.html";
 			a.hidden = true;
 			document.body.appendChild(a);
 			a.innerHTML = "";
