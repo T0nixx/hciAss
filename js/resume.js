@@ -82,7 +82,7 @@ window.onload = function fload(){
 			othArr[i].push(document.getElementsByName("oth"+i)[0].value);
 		}
 
-		document.body.innerHTML = '<div style="margin:25px;padding-bottom:20px;border:3px solid #b0e0e6;padding-left: 5px"><div id="holder"></div><div id="Rname"><h3>Name</h3></div><div><h3>Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3>Career Goal</h3></div>	<div id = Redu><h3>Education</h3>	</div><div id = "Rexp"><h3>Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div></div><input type="text" name="fileName" placeholder="write file name here"><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button>'
+		document.body.innerHTML = '<div style="margin:25px;padding-bottom:20px;border:3px solid #b0e0e6;padding-left: 5px"><div id="holder"></div><div id="Rname"><h3 style= "border-bottom:3px solid #87ceeb;padding-bottom:3px">Name</h3></div><div ><h3 style= "border-bottom:3px solid #87ceeb;padding-bottom:3px">Contact</h3><div id="Rhp">H.P. :</div><div id="Rtel">TEL  :</div><div id="Rmail">E-mail :</div></div> <div id = Rgoal><h3 style= "border-bottom:3px solid #87ceeb;padding-bottom:3px">Career Goal</h3></div>	<div id = Redu><h3 style= "border-bottom:3px solid #87ceeb;padding-bottom:3px">Education</h3>	</div><div id = "Rexp"><h3 style= "border-bottom:3px solid #87ceeb;padding-bottom:3px">Experience</h3>	</div><div id = "Rskl"></div><div><h3>Others</h3><ol style="padding-left: 25px" id = Roth></ol></div></div><input type="text" name="fileName" placeholder="write file name here"><button id = "saveBtn">Save</button><button id = "cancelBtn">Cancel</button>'
 		if(typeof(imgFile)!=="undefined"){
 			document.getElementById("holder").innerHTML = '';
 			document.getElementById("holder").appendChild(imgFile);
@@ -153,6 +153,7 @@ window.onload = function fload(){
 
 		var cancelBtn = document.getElementById("cancelBtn");
 		cancelBtn.onclick = function cancel(){
+			document.body.style.backgroundColor = "#ffffff";
 			document.body.innerHTML = doc;
 			document.getElementsByName("FName")[0].value = Fname;
 			document.getElementsByName("MName")[0].value = Mname;
