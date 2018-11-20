@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HW 4-2</title>
+</head>
+<body>
+	<div>
+		<h3>All colors are chosen randomly. If you refresh you can see objects in another colors</h3>
+	</div>
+	<canvas id = "canvas">This message is shown when your browser doesn't support canvas</canvas>
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext('2d');
+		canvas.width = 800;
+		canvas.height = 800;
+
+		var nodeArr = []
+		var cnt = 0;
+
+		create_root();
+		add_node(0, "line");
+		add_node(0, "point");
+		add_node(0, "label", "A");
+		add_node(2, "line");
+		add_node(2, "label", "B");
+		add_node(3, "point");
+		add_node(3, "line");		
+		gpcInit(search_node(0));
+
+		function random_rgba() {
+   			var o = Math.round, r = Math.random, s = 255;
+		    return 'rgba(' + o(r()*s) + ',' + o(r()*s) + ',' + o(r()*s) + ',' + r().toFixed(1) + ')';
+		}
+
+		function gpcInit(node){
+			if(node.parent === undefined){
+				initRect(node, 0, 0, canvas.width, canvas.height);
+				render(node, node.graphics, context);
+				if(node.children.length!=0){
+					for(var i=0; i<node.children.length;i++){
+						gpcInit(node.children[i]);
+					}
+				}
+			}
+			else{	
+				var parentX = node.parent.graphics.startX;
+				var parentY = node.parent.graphics.startY;
+				var parentW = node.parent.graphics.endX-parentX;
+				var parentH = node.parent.graphics.endY-parentY;
+				var len = node.parent.children.length;
+				var idx = node.parent.children.indexOf(node);
+				var childX = parentX+parentW/10;
+				var childY = parentY+parentH/len*idx + parentH/len*0.1;
+				var childW = parentW-parentW/5;
+				var childH = parentH/len- parentH/len*0.2;
+				
+				switch(node.type){
+					case "line" : initLine(node, childX, childY, childX+childW, childY+childH );break;
+					case "label" : initLabel(node, childX, childY, childW, childH, node.data);break;
+					case "rectangle" : initRect(node, childX, childY, childW, childH);break;
+					case "point" : initPoint(node, childX, childY, childH/2);break;
+					default : initRect(node, childX, childY, childW, childH);break;
+ 				}
+ 				render(node, node.graphics, context);
+
+ 				if(node.children.length!=0){
+					for(var i=0; i<node.children.length;i++){
+						gpcInit(node.children[i]);
+					}
+				}
+			}
+
+		}
+		
+		
+
+		function render(node, gpc, ctx){
+			switch (node.type){
+				case "line" : 
+					ctx.strokeStyle = random_rgba();
+					ctx.beginPath();
+					ctx.moveTo(gpc.startX, gpc.startY);
+					ctx.lineTo(gpc.endX, gpc.endY);
+					ctx.stroke();
+					break;
+				case "label" :
+					ctx.fillStyle = random_rgba();
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					ctx.fillStyle = random_rgba();
+					ctx.font = "30px times";
+					ctx.textAlign = 'center';
+					ctx.fillText(gpc.label, gpc.startX+gpc.width/2, gpc.endY-gpc.height/2);
+					break;	
+				case "point" :
+					centerX = gpc.startX+(gpc.radius);
+					centerY = gpc.startY+(gpc.radius);
+					ctx.beginPath();
+					ctx.arc(centerX, centerY, gpc.radius, 0, 2 * Math.PI, false);
+					ctx.fillStyle = random_rgba();
+				    ctx.fill();
+				    ctx.lineWidth = 5;
+				    ctx.strokeStyle = random_rgba();
+				    ctx.stroke();
+ 					break;
+				case "rectangle" : 
+					ctx.fillStyle = random_rgba();
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					break;
+				default :
+					ctx.fillStyle = random_rgba();
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					break;
+			}
+			
+		}
+
+		
+
+		function initLine(node, startX, startY, endX, endY) {
+			node.graphics = 
+			{
+				startX : startX,
+				startY : startY,
+				endX : endX,
+				endY : endY 
+			}
+					
+		}
+		function initLabel(node, startX, startY, width, height, label){
+			node.graphics ={
+				startX : startX,
+				startY : startY,
+				endX : startX + width,
+				endY : startY + height, 
+				width : width,
+				height : height,
+				label : label
+			}			
+
+		}
+		function initRect(node, startX, startY, width, height){
+			node.graphics ={
+				startX : startX,
+				startY : startY,
+				endX : startX + width,
+				endY : startY + height, 
+				width : width,
+				height : height
+			}		
+
+		}
+		function initPoint(node, startX, startY, radius){
+			node.graphics ={
+				startX : startX,
+				startY : startY,
+				endX : startX + radius*2,
+				endY : startY + radius*2, 
+				radius : radius
+			}			
+
+		}
+
+		
+
+		function create_root(){
+			var newNode = {
+				id : cnt,
+				children : [],
+				parent : undefined,
+				type : "rectangle",
+				data : undefined,
+				graphics : undefined
+			};
+			cnt++;
+			nodeArr.push(newNode);
+			return newNode;			
+		}
+
+		function add_node(parentId, type, data){
+			var parent = search_node(parentId);
+			var newNode = {
+				id : cnt,
+				children :[],
+				parent : parent,
+				type : type,
+				data : data,
+				graphics : undefined
+			};
+			
+			cnt++;
+			nodeArr.push(newNode);
+			parent.children.push(newNode);
+		}
+
+		function checkId(element){
+			if(element.id===this.id)
+				return element.id
+		}
+
+		function delete_node(id) {
+			var node = search_node(id);
+			if(node.parent !== undefined){
+				
+				if(node.children.length!==0){
+					var len = node.children.length;
+					for(var i=0; i<len; i++){
+						delete_node(node.children[0].id);
+					}
+				}
+				var idx = node.parent.children.findIndex(checkId, {id:id});
+				node.parent.children.splice(idx,1);
+				idx = nodeArr.findIndex(checkId, {id:id});
+				nodeArr.splice(idx,1);
+			}
+			else
+				nodeArr = [];
+		}
+		function search_node(id){
+			for(var i=0;i<nodeArr.length;i++){
+				if(id == nodeArr[i].id){
+					return nodeArr[i];
+				}
+			}
+		}
+
+		
+	</script>
+</body>
+</html>
