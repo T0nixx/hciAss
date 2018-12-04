@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>HW 4-1-3</title>
+</head>
+<body>
+	<div>
+		
+	</div>
+	<canvas id = "canvas">This message is shown when your browser doesn't support canvas</canvas>
+	<script type="text/javascript">
+		var canvas = document.getElementById("canvas");
+		var context = canvas.getContext('2d');
+		canvas.addEventListener("click", printMousePos);
+		
+		canvas.width = 1100;
+		canvas.height = 900;
+
+		var nodeArr = []
+		var cnt = 0;	//node cnt
+		var menuIdx = 0;	
+		var dArr = [];	//dialog 창
+
+		create_root();
+		
+		gpcInit(search_node(0));
+
+		
+
+
+		function printMousePos(event) {
+			var node = findFocusedElement(event.clientX-8,event.clientY-8);
+			switch(node.type){
+				case "window" :
+					if(node.parent === undefined){
+						delete_node(node.id);
+						create_root();
+						gpcInit(search_node(0));
+					}
+					break;
+				case "menu": 
+					switch (node.data){
+						case "File" :
+							if(node.children.length == 0){
+								add_node(node.id, "item", "Fmenu1");
+								add_node(node.id, "item", "Fmenu2");
+								add_node(node.id, "item", "Fmenu3");
+								gpcInit(search_node(0));
+							}
+							else{
+								delete_node(node.children[0].id);
+								delete_node(node.children[0].id);
+								delete_node(node.children[0].id);
+								gpcInit(search_node(0));
+							}
+							break;
+						case "Edit" :
+							if(node.children.length == 0){
+								add_node(node.id, "item", "Emenu1");
+								add_node(node.id, "item", "Emenu2");
+								add_node(node.id, "item", "Emenu3");
+								gpcInit(search_node(0));
+							}
+							else{
+								delete_node(node.children[0].id);
+								delete_node(node.children[0].id);
+								delete_node(node.children[0].id);
+								gpcInit(search_node(0));
+							}
+							break;
+						}
+						break;
+					case "button":
+						var dialog = add_node(node.parent.id, "window", "dialog box");
+						add_node(dialog.id, "control", "X");
+						add_node(dialog.id, "textBox", "click and fill!");
+						add_node(dialog.id, "textBox", "click and fill!");
+						dArr.push(dialog);
+						gpcInit(search_node(0));
+						break;
+					case "control":
+						var pid = node.parent.id
+						delete_node(pid);
+						if(node.parent.parent != undefined){
+							gpcInit(search_node(0));
+							var idx = dArr.findIndex(checkId, {id:pid});
+							dArr.splice(idx,1);
+							console.log(dArr);
+						}
+						break;
+					case "textBox":
+						var newData = prompt("Please enter new text!");
+						if(newData != undefined){
+							node.data = newData;
+							gpcInit(search_node(0));
+						}
+						break;
+			
+			}
+
+		}
+
+		function findFocusedElement(currentX,currentY){
+			var lastnodeChecked;
+	    	nodeArr.forEach(function(node) {
+		        if (currentX <= node.graphics.endX && currentX >= node.graphics.startX) {
+		    	    if (currentY <= node.graphics.endY && currentY >= node.graphics.startY){
+		        	    lastnodeChecked = node;
+		            }
+		        }
+		   	});
+
+		   	if (lastnodeChecked != undefined){
+		   		console.log(lastnodeChecked.type + " " +lastnodeChecked.id);
+		   		return lastnodeChecked;
+		   	}
+		}
+
+
+		function gpcInit(node){
+			if(node.parent === undefined){
+				setGPC(node, 0, 0, canvas.width, canvas.height, node.data);
+				render(node, node.graphics, context);
+				if(node.children.length!=0){
+					for(var i=0; i<node.children.length;i++){
+						gpcInit(node.children[i]);
+					}
+				}
+			}
+			else{	
+				var parentX = node.parent.graphics.startX;
+				var parentY = node.parent.graphics.startY;
+				var parentW = node.parent.graphics.endX-parentX;
+				var parentH = node.parent.graphics.endY-parentY;
+				var len = node.parent.children.length;
+				var idx = node.parent.children.indexOf(node);
+				var childX, childY, childW, childH;
+				
+				if(node.parent.type == "window"){
+					if(node.type == "menu"){
+						childX = parentX + (idx-2) * 110+10;
+						childW = 100;
+						childY = parentY+parentH/20+5;
+						childH = parentH/20; 
+					}
+					else if(node.type == "window"){
+						childX = parentX + 300 + (dArr.findIndex(checkId, {id:node.id}))*15;
+						childW = 300;
+						childY = parentY +300 + (dArr.findIndex(checkId, {id:node.id}))*15;
+						childH = 250;
+					}
+					else if(node.type == "button"){
+						childX = parentX +15;
+						childW = 80;
+						childY = parentY+parentH/10+15;
+						childH = 80;
+					}
+					else if(node.type == "control"){
+						childX = parentX + parentW - 35;
+						childW = 30;
+						childY = parentY+6;
+						childH = 30;
+					}
+					else if(node.type == "textBox"){
+						childX = parentX + 50;
+						childW = 200;
+						childY = parentY + 75 +(idx-1)*70;
+						childH = 50
+					}
+				}
+				
+				if(node.parent.type == "menu"){
+					childX = parentX + 15;
+					childW = parentW;
+					childY = parentY+(idx+1)*parentH;
+					childH = parentH;
+				}
+
+				
+				setGPC(node, childX, childY, childW, childH, node.data);
+					
+ 				
+ 				render(node, node.graphics, context);
+
+ 				if(node.children.length!=0){
+					for(var i=0; i<node.children.length;i++){
+						gpcInit(node.children[i]);
+					}
+				}
+			}
+
+		}
+		
+		
+
+		function render(node, gpc, ctx){
+			switch (node.type){
+				case "window":
+					ctx.fillStyle = "#E0BFA0";
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, 45);
+					ctx.fillStyle = "white";
+					ctx.textAlign = 'center';
+					ctx.font = '16px Arial';
+					ctx.fillText(gpc.data, gpc.startX+60 , (gpc.startY+30));
+					ctx.fillStyle = "#EBC1B3";
+					ctx.fillRect(gpc.startX, gpc.startY+45, gpc.width, gpc.height);
+					ctx.strokeStyle= "black";
+					ctx.strokeRect(gpc.startX, gpc.startY, gpc.width ,gpc.height);
+					break;
+				case "menu":
+					ctx.fillStyle = "#a6c0fe";
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					ctx.fillStyle = "#ffffff";
+					ctx.font = "18px Arial";
+					ctx.textAlign = 'center';
+					ctx.fillText(gpc.data, gpc.startX+gpc.width/2, gpc.startY+gpc.height/1.6);
+					break;
+				case "button":
+					ctx.fillStyle ="#f68084";
+					ctx.beginPath();
+					ctx.moveTo(gpc.startX+10,gpc.startY);
+					ctx.lineTo(gpc.startX+gpc.width-10, gpc.startY);
+					ctx.quadraticCurveTo(gpc.startX+gpc.width, gpc.startY, gpc.startX+gpc.width, gpc.startY+10);
+					ctx.lineTo(gpc.startX+gpc.width, gpc.startY+gpc.height-10)
+					ctx.quadraticCurveTo(gpc.startX+gpc.width, gpc.startY+gpc.height, gpc.startX+gpc.width-10, gpc.startY+gpc.height);
+					ctx.lineTo(gpc.startX+10, gpc.startY+gpc.height);
+					ctx.quadraticCurveTo(gpc.startX, gpc.startY+gpc.height, gpc.startX, gpc.startY+gpc.height-10);
+					ctx.lineTo(gpc.startX, gpc.startY+10);
+					ctx.quadraticCurveTo(gpc.startX, gpc.startY, gpc.startX+10, gpc.startY);
+					ctx.fill();
+
+					ctx.fillStyle = "white";
+					ctx.font = "18px Arial";
+					ctx.textAlign = "center";
+					ctx.fillText(gpc.data, gpc.startX+gpc.width/2, gpc.startY+gpc.height/1.8)
+
+					break;
+				case "control":
+					ctx.strokeStyle = "#FFFFFF";
+					ctx.strokeRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					ctx.fillStyle = "#FFFFFF";
+					ctx.textAlign = 'center';
+					ctx.font = '14px Arial';
+					ctx.fillText(gpc.data, gpc.startX+gpc.width/2, gpc.startY+gpc.height/1.6);
+					break;
+				case "item":
+					ctx.fillStyle = "#a6c0fe";
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					ctx.fillStyle = "#ffffff";
+					ctx.font = "18px Arial";
+					ctx.textAlign = 'center';
+					ctx.fillText(gpc.data, gpc.startX+gpc.width/2, gpc.startY+gpc.height/1.6);
+					break;
+				case "textBox":
+					ctx.fillStyle = "rgba(100,50,100,0.3)";
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+					ctx.fillStyle = "#ffffff";
+					ctx.font = "14px Arial";
+					ctx.textAlign = 'center';
+					ctx.fillText(gpc.data, gpc.startX + gpc.width/2, gpc.startY + gpc.height/2);
+					ctx.strokeStyle= "black";
+					ctx.strokeRect(gpc.startX, gpc.startY, gpc.width ,gpc.height);
+					break;
+
+
+				default :
+					ctx.fillStyle = "#FFFFFF";
+					ctx.fillRect(gpc.startX, gpc.startY, gpc.width, gpc.height);
+
+					break;
+			}
+			
+		}
+
+		
+
+		function setGPC(node, startX, startY, width, height, data){
+			node.graphics ={
+				startX : startX,
+				startY : startY,
+				endX : startX + width,
+				endY : startY + height, 
+				width : width,
+				height : height,
+				data : data
+			}			
+
+		}
+		
+
+		function create_root(){
+			var newNode = {
+				id : cnt,
+				children : [],
+				parent : undefined,
+				type : "window",
+				data : "Root_window",
+				graphics : undefined
+			};
+			cnt++;
+			nodeArr.push(newNode);
+			add_node(newNode.id, "control", "X");
+			add_node(newNode.id, "button", "Add");
+			add_node(newNode.id, "menu", "File");
+			add_node(newNode.id, "menu", "Edit");
+
+			
+			
+			return newNode;			
+		}
+
+		function add_node(parentId, type, data){
+			var parent = search_node(parentId);
+			var newNode = {
+				id : cnt,
+				children :[],
+				parent : parent,
+				type : type,
+				data : data,
+				graphics : undefined
+			};
+			if(newNode.type == "menu")
+				menuIdx++;
+			cnt++;
+			nodeArr.push(newNode);
+			parent.children.push(newNode);
+			return newNode;
+		}
+
+		function checkId(element){
+			if(element.id===this.id)
+				return element.id
+		}
+
+		function delete_node(id) {
+			var node = search_node(id);
+			if(node !== undefined){
+				if(node.parent !== undefined){
+					
+					if(node.children.length!==0){
+						var len = node.children.length;
+						for(var i=0; i<len; i++){
+							delete_node(node.children[0].id);
+						}
+					}
+					var idx = node.parent.children.findIndex(checkId, {id:id});
+					node.parent.children.splice(idx,1);
+					idx = nodeArr.findIndex(checkId, {id:id});
+					nodeArr.splice(idx,1);
+					context.fillStyle ="white";
+					context.fillRect(0,0,canvas.width, canvas.height);
+					gpcInit(search_node(0));
+					canvas.addEventListener("click", printMousePos);
+
+				}
+				else{
+					nodeArr = [];
+					cnt=0;
+					menuIdx =0;
+					context.fillStyle ="white";
+					context.fillRect(0,0,canvas.width, canvas.height);
+				}
+			}
+			else{
+				console.log("There's no node to delete!");
+			}
+		}
+		function search_node(id){
+			for(var i=0;i<nodeArr.length;i++){
+				if(id == nodeArr[i].id){
+					return nodeArr[i];
+				}
+			}
+		}
+
+		
+	</script>
+</body>
+</html>
